@@ -5,6 +5,7 @@ import { motion } from 'framer-motion'
 import { Car, Menu, X, Moon, Sun } from 'lucide-react'
 import { useTheme } from './theme-provider'
 import { Button } from '@/src/components/ui/button'
+import { signIn } from "next-auth/react";
 
 export function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false)
@@ -76,6 +77,7 @@ export function Navbar() {
             <div className="flex items-center space-x-4">
             
               <Button
+                onClick={() => signIn()}
                 size="sm"
                 className="hidden sm:flex bg-cyan hover:bg-cyan/80 text-black magnetic-button"
               >
