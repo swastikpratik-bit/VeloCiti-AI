@@ -4,7 +4,6 @@ import { ImageKitProvider } from "@imagekit/next";
 import type { Metadata, Viewport } from "next";
 import { Inter, Outfit } from "next/font/google";
 import "./globals.css";
-import { Navbar } from "../components/navbar/navbar";
 import { Header } from "../components/header/header";
 
 const inter = Inter({
