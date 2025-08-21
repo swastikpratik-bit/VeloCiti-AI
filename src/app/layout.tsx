@@ -5,6 +5,7 @@ import type { Metadata, Viewport } from "next";
 import { Inter, Outfit } from "next/font/google";
 import "./globals.css";
 import { Header } from "../components/header/header";
+import { Toaster } from "../components/ui/sonner";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -49,6 +50,7 @@ export default async function RootLayout({
             <Header />
 
             {children}
+            <Toaster />
             <Footer />
           </ImageKitProvider>
         </ThemeProvider>

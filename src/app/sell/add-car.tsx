@@ -1,28 +1,13 @@
 "use client";
 
+import { Badge } from "@/src/components/ui/badge";
 import { Button } from "@/src/components/ui/button";
-import { Input } from "@/src/components/ui/input";
-import { Textarea } from "@/src/components/ui/textarea";
-import { Label } from "@/src/components/ui/label";
-import { useCallback, useEffect, useState } from "react";
-import { Skeleton } from "@/src/components/ui/skeleton";
-import { useForm } from "react-hook-form";
-import { toast } from "sonner";
-import { Progress } from "@/src/components/ui/progress";
 import {
   Card,
   CardContent,
   CardHeader,
   CardTitle,
 } from "@/src/components/ui/card";
-import { WandSparkles, X, Upload, Image as ImageIcon } from "lucide-react";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/src/components/ui/select";
 import {
   Carousel,
   CarouselContent,
@@ -30,417 +15,29 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/src/components/ui/carousel";
-import { Badge } from "@/src/components/ui/badge";
-import { motion } from "framer-motion";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { generateImageSchema } from "@/src/lib/zod";
+import { Input } from "@/src/components/ui/input";
+import { Label } from "@/src/components/ui/label";
 import {
-  ImageKitAbortError,
-  ImageKitInvalidRequestError,
-  ImageKitServerError,
-  ImageKitUploadNetworkError,
-  upload,
-} from "@imagekit/next";
-import { imagekitAuthenticator } from "@/src/lib/imagekit";
-// import { generateImage } from "@/src/lib/actions/cars-actions";
-
-// Types
-interface GenerateImageSchema {
-  description: string;
-  name: string;
-}
-
-interface AddCarSchema {
-  name: string;
-  brand: string;
-  type: string;
-  year: number;
-  mileage: number;
-  colors: string[];
-  price: number;
-  description: string;
-  images: string[];
-  transmission: "MANUAL" | "AUTOMATIC";
-  features: string[];
-  location: string;
-  fuelType: string;
-  engineCapacity?: number;
-  doors?: number;
-  seats?: number;
-  topSpeed?: number;
-  acceleration?: number;
-  horsepower?: number;
-  torque?: number;
-  length?: number;
-  width?: number;
-  height?: number;
-  weight?: number;
-  sellerName: string;
-  sellerImage: string;
-  sellerPhone: string;
-  sellerEmail: string;
-  sellerAddress: string;
-  sellerCity: string;
-  sellerState: string;
-  sellerZip: string;
-  sellerCountry: string;
-  sellerWebsite: string;
-}
-
-// Mock image store
-const useImages = () => {
-  const [images, setImages] = useState<string[]>([]);
-
-  const addImage = (image: string) => {
-    setImages((prev) => [...prev, image]);
-  };
-
-  const removeImage = (image: string) => {
-    setImages((prev) => prev.filter((img) => img !== image));
-  };
-
-  const clearImages = () => {
-    setImages([]);
-  };
-
-  return { images, addImage, removeImage, clearImages };
-};
-
-// Mock functions
-const generateImage = async (description: string, name: string) => {
-  // Simulate API call
-  await new Promise((resolve) => setTimeout(resolve, 2000));
-  return {
-    base64Data:
-      "https://images.pexels.com/photos/3802508/pexels-photo-3802508.jpeg?auto=compress&cs=tinysrgb&w=800",
-    name: name,
-  };
-};
-
-const addNewCar = async (data: AddCarSchema) => {
-  // Simulate API call
-  await new Promise((resolve) => setTimeout(resolve, 1500));
-  console.log("Adding car:", data);
-};
-
-const autoGenerateCar = async (carName: string) => {
-  // Simulate AI generation
-  await new Promise((resolve) => setTimeout(resolve, 2000));
-  return {
-    brand: "Tesla",
-    type: "SEDAN",
-    year: 2024,
-    mileage: 0,
-    price: 89990,
-    description: `The ${carName} represents the pinnacle of electric vehicle technology, combining luxury, performance, and sustainability in one exceptional package.`,
-    transmission: "AUTOMATIC" as const,
-    location: "San Francisco, CA",
-    fuelType: "ELECTRIC",
-    engineCapacity: 0,
-    doors: 4,
-    seats: 5,
-    topSpeed: 200,
-    acceleration: 3.1,
-    horsepower: 670,
-    torque: 850,
-    length: 4970,
-    width: 1964,
-    height: 1445,
-    weight: 2162,
-    colors: ["Pearl White", "Solid Black", "Midnight Silver"],
-    features: [
-      "Autopilot",
-      "Premium Interior",
-      "Glass Roof",
-      "Supercharging",
-      "Over-the-air Updates",
-    ],
-    sellerName: "Tesla Motors",
-    sellerPhone: "+1 (650) 681-5000",
-    sellerEmail: "sales@tesla.com",
-    sellerAddress: "1 Tesla Road",
-    sellerCity: "Austin",
-    sellerState: "TX",
-    sellerZip: "78725",
-    sellerCountry: "USA",
-    sellerWebsite: "https://tesla.com",
-  };
-};
-
-export const GenerateImage = () => {
-  const { addImage } = useImages();
-  const [image, setImage] = useState<{ base64Data: string; name: string }>();
-  const [uploadLoader, setUploadLoader] = useState(false);
-  const [generatingLoader, setGeneratingLoader] = useState(false);
-  const [progress, setProgress] = useState(0);
-  const abortController = new AbortController();
-
-  const {
-    register,
-    formState: { errors },
-    handleSubmit,
-  } = useForm<GenerateImageSchema>({
-    defaultValues: {
-      description: "",
-      name: "",
-    },
-    resolver: zodResolver(generateImageSchema),
-  });
-
-  const onSubmit = async ({ description, name }: GenerateImageSchema) => {
-    const toastId = toast.loading("Generating image...");
-    try {
-      setGeneratingLoader(true);
-
-      if (!description || !name)
-        throw new Error("Description and name are required");
-
-      const data = await generateImage(description, name);
-
-      if (!data) throw new Error("Failed to generate image");
-      setImage(data);
-
-      toast.success("Image generated successfully", { id: toastId });
-    } catch {
-      toast.error("Error generating image", { id: toastId });
-    } finally {
-      setGeneratingLoader(false);
-    }
-  };
-
-  const handleUploadDummy = async () => {
-    if (!image) return toast.error("No image to upload");
-
-    setUploadLoader(true);
-    try {
-      // Simulate upload with progress
-      for (let i = 0; i <= 100; i += 10) {
-        setProgress(i);
-        await new Promise((resolve) => setTimeout(resolve, 100));
-      }
-
-      addImage(image.base64Data);
-      toast.success("Image uploaded successfully");
-      setImage(undefined);
-      setProgress(0);
-    } catch (error) {
-      toast.error("Upload failed");
-    } finally {
-      setUploadLoader(false);
-    }
-  };
-
-  const handleUpload = async () => {
-    if (!image) return toast.error("No image to upload");
-
-    let authParams;
-    setUploadLoader(true);
-    try {
-      authParams = await imagekitAuthenticator();
-    } catch (error) {
-      console.error("Error authenticating with ImageKit", error);
-      setUploadLoader(false);
-      return;
-    }
-
-    const { signature, expire, token, publicKey } = authParams;
-    console.log("ImageKit auth params:", authParams);
-
-    try {
-      const uploadResponse = await upload({
-        signature,
-        expire,
-        token,
-        publicKey,
-        file: image.base64Data,
-        fileName: image.name,
-        folder: "cars",
-        onProgress: (event) => {
-          setProgress((event.loaded / event.total) * 100);
-        },
-        abortSignal: abortController.signal,
-      });
-
-      console.log("Upload response:", uploadResponse);
-
-      if (!uploadResponse.filePath)
-        return toast.error("Failed to upload image");
-      addImage(uploadResponse.filePath);
-
-      toast.success("Image uploaded successfully");
-    } catch (error) {
-      // Handle specific error types provided by the ImageKit SDK.
-      if (error instanceof ImageKitAbortError) {
-        console.error("Upload aborted:", error.reason);
-      } else if (error instanceof ImageKitInvalidRequestError) {
-        console.error("Invalid request:", error.message);
-      } else if (error instanceof ImageKitUploadNetworkError) {
-        console.error("Network error:", error.message);
-      } else if (error instanceof ImageKitServerError) {
-        console.error("Server error:", error.message);
-      } else {
-        // Handle any other errors that may occur.
-        console.error("Upload error:", error);
-      }
-    } finally {
-      setUploadLoader(false);
-    }
-  };
-
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.6 }}
-    >
-      <Card className="glass border-cyan/20">
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2 text-cyan">
-            <ImageIcon className="h-6 w-6" />
-            Generate AI Image
-          </CardTitle>
-          <p className="text-muted-foreground">
-            Use AI to generate stunning images of your dream car
-          </p>
-        </CardHeader>
-        <CardContent>
-          <form className="space-y-6" onSubmit={handleSubmit(onSubmit)}>
-            <div className="space-y-2">
-              <Label htmlFor="description">Description</Label>
-              <Textarea
-                id="description"
-                placeholder="Describe the car you want to generate... (e.g., 'A sleek red sports car with carbon fiber details parked in a modern city at sunset')"
-                rows={6}
-                className="bg-background/50 border-cyan/20 focus:border-cyan"
-                {...register("description", {
-                  required: "Description is required",
-                })}
-              />
-              {errors.description && (
-                <p className="text-sm text-red-500">
-                  {errors.description.message}
-                </p>
-              )}
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="file-name">File Name</Label>
-              <Input
-                id="file-name"
-                placeholder="Enter a name for the generated image..."
-                className="bg-background/50 border-cyan/20 focus:border-cyan"
-                {...register("name", { required: "File name is required" })}
-              />
-              {errors.name && (
-                <p className="text-sm text-red-500">{errors.name.message}</p>
-              )}
-            </div>
-
-            <Button
-              disabled={generatingLoader}
-              className="w-full bg-cyan hover:bg-cyan/80 text-black font-semibold"
-            >
-              {generatingLoader ? (
-                <>
-                  <div className="w-4 h-4 border-2 border-black/20 border-t-black rounded-full animate-spin mr-2" />
-                  Generating...
-                </>
-              ) : (
-                <>
-                  <WandSparkles className="h-4 w-4 mr-2" />
-                  Generate Image
-                </>
-              )}
-            </Button>
-          </form>
-
-          {image && (
-            <motion.div
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              className="mt-8 space-y-4"
-            >
-              <h3 className="text-lg font-semibold">Generated Image</h3>
-              {generatingLoader ? (
-                <Skeleton className="w-full h-96 rounded-lg" />
-              ) : (
-                <div className="relative rounded-lg overflow-hidden">
-                  <img
-                    src={image.base64Data}
-                    alt="Generated Car"
-                    className="w-full h-96 object-cover"
-                  />
-                  <div className="absolute top-4 right-4">
-                    <Badge className="bg-cyan/90 text-black">
-                      AI Generated
-                    </Badge>
-                  </div>
-                </div>
-              )}
-
-              <div className="flex justify-end gap-4">
-                <Button
-                  variant="outline"
-                  onClick={() => setImage(undefined)}
-                  className="border-cyan/50 text-cyan hover:bg-cyan/10"
-                >
-                  Cancel
-                </Button>
-                <Button
-                  disabled={uploadLoader}
-                  onClick={handleUpload}
-                  className="bg-cyan hover:bg-cyan/80 text-black"
-                >
-                  {uploadLoader ? (
-                    <>
-                      <Upload className="h-4 w-4 mr-2 animate-pulse" />
-                      Uploading...
-                    </>
-                  ) : (
-                    <>
-                      <Upload className="h-4 w-4 mr-2" />
-                      Upload Image
-                    </>
-                  )}
-                </Button>
-              </div>
-            </motion.div>
-          )}
-
-          {progress > 0 && (
-            <div className="mt-4 space-y-2">
-              <Progress value={progress} className="h-2" />
-              <p className="text-sm text-muted-foreground text-center">
-                Uploading... {Math.round(progress)}%
-              </p>
-            </div>
-          )}
-        </CardContent>
-      </Card>
-    </motion.div>
-  );
-};
-
-// -----------------------------------------------------------------------------add Car------------------------------------------------------------
-// -----------------------------------------------------------------------------add Car------------------------------------------------------------
-// -----------------------------------------------------------------------------add Car------------------------------------------------------------
-// -----------------------------------------------------------------------------add Car------------------------------------------------------------
-// -----------------------------------------------------------------------------add Car------------------------------------------------------------
-// -----------------------------------------------------------------------------add Car------------------------------------------------------------
-// -----------------------------------------------------------------------------add Car------------------------------------------------------------
-// -----------------------------------------------------------------------------add Car------------------------------------------------------------
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/src/components/ui/select";
+import { Textarea } from "@/src/components/ui/textarea";
+import { useImages } from "@/src/store/image";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { motion } from "framer-motion";
+import { WandSparkles, X } from "lucide-react";
+import { useCallback, useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
+import { toast } from "sonner";
+import { addNewCar } from "@/src/lib/actions/cars-actions";
+import { addCarSchema, AddCarSchema } from "@/src/lib/zod";
+import { autoGenerateCar } from "@/src/lib/actions/ai-action";
+import { CarFuelType, CarType, carTypes } from "@/src/constants/cars";
 
 const STORAGE_KEY = "new-car-details";
-
-const carTypes = [
-  "SEDAN",
-  "SUV",
-  "COUPE",
-  "CONVERTIBLE",
-  "HATCHBACK",
-  "TRUCK",
-  "VAN",
-];
 
 export const AddCarForm = () => {
   const { images, removeImage, addImage, clearImages } = useImages();
@@ -453,10 +50,11 @@ export const AddCarForm = () => {
     watch,
     reset,
   } = useForm<AddCarSchema>({
+    resolver: zodResolver(addCarSchema),
     defaultValues: {
       name: "",
       brand: "",
-      type: "",
+      type: undefined,
       year: new Date().getFullYear(),
       mileage: 0,
       colors: [],
@@ -466,7 +64,19 @@ export const AddCarForm = () => {
       transmission: "AUTOMATIC",
       features: [],
       location: "",
-      fuelType: "",
+      fuelType: undefined,
+      engineCapacity: undefined,
+      doors: undefined,
+      seats: undefined,
+      topSpeed: undefined,
+      acceleration: undefined,
+      horsepower: undefined,
+      torque: undefined,
+      length: undefined,
+      width: undefined,
+      height: undefined,
+      weight: undefined,
+      // Seller details
       sellerName: "",
       sellerImage: "",
       sellerPhone: "",
@@ -524,13 +134,6 @@ export const AddCarForm = () => {
     [features, setValue]
   );
 
-  const addImageUrl = useCallback(() => {
-    if (!imageUrl || imageUrl.trim() === "" || images.includes(imageUrl))
-      return;
-    addImage(imageUrl);
-    setImageUrl("");
-  }, [imageUrl, images, addImage]);
-
   const resetState = useCallback(() => {
     clearImages();
     setColors([]);
@@ -546,24 +149,34 @@ export const AddCarForm = () => {
       try {
         setSubmitHandlerLoading(true);
         await addNewCar(data);
-        toast.success("Car listing added successfully", { id: toastId });
+        toast.success("Car listing added successfully", {
+          id: toastId,
+        });
+
         resetState();
       } catch (error) {
-        toast.error("Error adding car listing", { id: toastId });
+        if (error instanceof Error)
+          toast.error(error.message, {
+            id: toastId,
+          });
+        else
+          toast.error("Error adding car listing", {
+            id: toastId,
+          });
       } finally {
         setSubmitHandlerLoading(false);
       }
     },
-    [resetState]
+    [resetState, setSubmitHandlerLoading]
   );
 
   const autoGenerateHandler = useCallback(async () => {
     try {
       if (!watch("name"))
-        return toast.error("Please enter a car name to generate details");
-
+        return toast.error("Please enter a car name to generate images");
       setIsGenerateAILoading(true);
 
+      // Generate Info
       const result = await autoGenerateCar(watch("name"));
 
       if (!result) {
@@ -574,16 +187,23 @@ export const AddCarForm = () => {
       setColors(result.colors);
       setFeatures(result.features);
 
-      // Set generated data to form state
+      // set generated data to form state
       Object.entries(result).forEach(([key, value]) => {
         if (key === "images") return;
-        setValue(key as keyof AddCarSchema, value as any);
+
+        if (key === "sellerImage") {
+          setValue("sellerImage", "/default-image.jpg");
+          return;
+        }
+        setValue(key as keyof AddCarSchema, value as string);
       });
 
       localStorage.setItem(STORAGE_KEY, JSON.stringify(result));
+
       toast.success("Car details generated successfully");
     } catch (error) {
-      toast.error("Failed to generate car details");
+      if (error instanceof Error) toast.error(error.message);
+      else toast.error("Failed to generate car details");
     } finally {
       setIsGenerateAILoading(false);
     }
@@ -591,7 +211,24 @@ export const AddCarForm = () => {
 
   useEffect(() => {
     setValue("images", images);
+
+    const savedCarDetails = localStorage.getItem(STORAGE_KEY);
+
+    if (!savedCarDetails) return;
+    const parsedDetails = JSON.parse(savedCarDetails) as AddCarSchema;
+
+    setColors(parsedDetails.colors);
+    setFeatures(parsedDetails.features);
+
+    Object.entries(parsedDetails).forEach(([key, value]) => {
+      setValue(key as keyof AddCarSchema, value as string);
+    });
   }, [images, setValue]);
+
+  const verifyClick = (data: AddCarSchema) => {
+    console.log("submitting......");
+    console.log(data);
+  };
 
   return (
     <motion.div
@@ -660,7 +297,11 @@ export const AddCarForm = () => {
 
                 <div className="space-y-2">
                   <Label htmlFor="type">Car Type</Label>
-                  <Select onValueChange={(value) => setValue("type", value)}>
+                  <Select
+                    onValueChange={(value) =>
+                      setValue("type", value as CarType)
+                    }
+                  >
                     <SelectTrigger className="bg-background/50 border-cyan/20 focus:border-cyan">
                       <SelectValue placeholder="Select car type" />
                     </SelectTrigger>
@@ -767,7 +408,9 @@ export const AddCarForm = () => {
                 <div className="space-y-2">
                   <Label htmlFor="fuelType">Fuel Type</Label>
                   <Select
-                    onValueChange={(value) => setValue("fuelType", value)}
+                    onValueChange={(value) =>
+                      setValue("fuelType", value as CarFuelType)
+                    }
                   >
                     <SelectTrigger className="bg-background/50 border-cyan/20 focus:border-cyan">
                       <SelectValue placeholder="Select fuel type" />
@@ -874,6 +517,191 @@ export const AddCarForm = () => {
               </div>
             </div>
 
+            {/* Car Specifications */}
+            <div className="space-y-4">
+              <h3 className="text-lg font-semibold text-cyan">
+                Car Specifications (Optional)
+              </h3>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor="engineCapacity">Engine Capacity (cc)</Label>
+                  <Input
+                    id="engineCapacity"
+                    type="number"
+                    placeholder="e.g., 2998"
+                    className="bg-background/50 border-cyan/20 focus:border-cyan"
+                    {...register("engineCapacity")}
+                  />
+                  {errors.engineCapacity && (
+                    <p className="text-sm text-red-500">
+                      {errors.engineCapacity.message as string}
+                    </p>
+                  )}
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="horsepower">Horsepower</Label>
+                  <Input
+                    id="horsepower"
+                    type="number"
+                    placeholder="e.g., 503"
+                    className="bg-background/50 border-cyan/20 focus:border-cyan"
+                    {...register("horsepower")}
+                  />
+                  {errors.horsepower && (
+                    <p className="text-sm text-red-500">
+                      {errors.horsepower.message as string}
+                    </p>
+                  )}
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="torque">Torque (Nm)</Label>
+                  <Input
+                    id="torque"
+                    type="number"
+                    placeholder="e.g., 650"
+                    className="bg-background/50 border-cyan/20 focus:border-cyan"
+                    {...register("torque")}
+                  />
+                  {errors.torque && (
+                    <p className="text-sm text-red-500">
+                      {errors.torque.message as string}
+                    </p>
+                  )}
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="acceleration">0-60 mph (seconds)</Label>
+                  <Input
+                    id="acceleration"
+                    type="number"
+                    step="0.1"
+                    placeholder="e.g., 3.2"
+                    className="bg-background/50 border-cyan/20 focus:border-cyan"
+                    {...register("acceleration")}
+                  />
+                  {errors.acceleration && (
+                    <p className="text-sm text-red-500">
+                      {errors.acceleration.message as string}
+                    </p>
+                  )}
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="topSpeed">Top Speed (mph)</Label>
+                  <Input
+                    id="topSpeed"
+                    type="number"
+                    placeholder="e.g., 155"
+                    className="bg-background/50 border-cyan/20 focus:border-cyan"
+                    {...register("topSpeed")}
+                  />
+                  {errors.topSpeed && (
+                    <p className="text-sm text-red-500">
+                      {errors.topSpeed.message as string}
+                    </p>
+                  )}
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="doors">Doors</Label>
+                  <Input
+                    id="doors"
+                    type="number"
+                    placeholder="e.g., 4"
+                    className="bg-background/50 border-cyan/20 focus:border-cyan"
+                    {...register("doors")}
+                  />
+                  {errors.doors && (
+                    <p className="text-sm text-red-500">
+                      {errors.doors.message as string}
+                    </p>
+                  )}
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="seats">Seats</Label>
+                  <Input
+                    id="seats"
+                    type="number"
+                    placeholder="e.g., 5"
+                    className="bg-background/50 border-cyan/20 focus:border-cyan"
+                    {...register("seats")}
+                  />
+                  {errors.seats && (
+                    <p className="text-sm text-red-500">
+                      {errors.seats.message as string}
+                    </p>
+                  )}
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="length">Length (mm)</Label>
+                  <Input
+                    id="length"
+                    type="number"
+                    placeholder="e.g., 4794"
+                    className="bg-background/50 border-cyan/20 focus:border-cyan"
+                    {...register("length")}
+                  />
+                  {errors.length && (
+                    <p className="text-sm text-red-500">
+                      {errors.length.message as string}
+                    </p>
+                  )}
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="width">Width (mm)</Label>
+                  <Input
+                    id="width"
+                    type="number"
+                    placeholder="e.g., 1887"
+                    className="bg-background/50 border-cyan/20 focus:border-cyan"
+                    {...register("width")}
+                  />
+                  {errors.width && (
+                    <p className="text-sm text-red-500">
+                      {errors.width.message as string}
+                    </p>
+                  )}
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="height">Height (mm)</Label>
+                  <Input
+                    id="height"
+                    type="number"
+                    placeholder="e.g., 1393"
+                    className="bg-background/50 border-cyan/20 focus:border-cyan"
+                    {...register("height")}
+                  />
+                  {errors.height && (
+                    <p className="text-sm text-red-500">
+                      {errors.height.message as string}
+                    </p>
+                  )}
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="weight">Weight (kg)</Label>
+                  <Input
+                    id="weight"
+                    type="number"
+                    placeholder="e.g., 1800"
+                    className="bg-background/50 border-cyan/20 focus:border-cyan"
+                    {...register("weight")}
+                  />
+                  {errors.weight && (
+                    <p className="text-sm text-red-500">
+                      {errors.weight.message as string}
+                    </p>
+                  )}
+                </div>
+              </div>
+            </div>
+
             {/* Description */}
             <div className="space-y-4">
               <h3 className="text-lg font-semibold text-cyan">Description</h3>
@@ -911,7 +739,7 @@ export const AddCarForm = () => {
                   />
                   <Button
                     type="button"
-                    onClick={addImageUrl}
+                    onClick={() => addImage("cars/pexels-photo-3764984.webp")}
                     className="bg-cyan hover:bg-cyan/80 text-black"
                   >
                     Add
@@ -961,13 +789,11 @@ export const AddCarForm = () => {
                     id="sellerName"
                     placeholder="e.g., John Doe"
                     className="bg-background/50 border-cyan/20 focus:border-cyan"
-                    {...register("sellerName", {
-                      required: "Seller name is required",
-                    })}
+                    {...register("sellerName")}
                   />
                   {errors.sellerName && (
                     <p className="text-sm text-red-500">
-                      {errors.sellerName.message}
+                      {errors.sellerName.message as string}
                     </p>
                   )}
                 </div>
@@ -978,13 +804,11 @@ export const AddCarForm = () => {
                     id="sellerPhone"
                     placeholder="e.g., +1 (555) 123-4567"
                     className="bg-background/50 border-cyan/20 focus:border-cyan"
-                    {...register("sellerPhone", {
-                      required: "Phone is required",
-                    })}
+                    {...register("sellerPhone")}
                   />
                   {errors.sellerPhone && (
                     <p className="text-sm text-red-500">
-                      {errors.sellerPhone.message}
+                      {errors.sellerPhone.message as string}
                     </p>
                   )}
                 </div>
@@ -996,17 +820,56 @@ export const AddCarForm = () => {
                     type="email"
                     placeholder="e.g., john@example.com"
                     className="bg-background/50 border-cyan/20 focus:border-cyan"
-                    {...register("sellerEmail", {
-                      required: "Email is required",
-                      pattern: {
-                        value: /^\S+@\S+$/i,
-                        message: "Invalid email address",
-                      },
-                    })}
+                    {...register("sellerEmail")}
                   />
                   {errors.sellerEmail && (
                     <p className="text-sm text-red-500">
-                      {errors.sellerEmail.message}
+                      {errors.sellerEmail.message as string}
+                    </p>
+                  )}
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="sellerWebsite">Website</Label>
+                  <Input
+                    id="sellerWebsite"
+                    placeholder="e.g., https://example.com"
+                    className="bg-background/50 border-cyan/20 focus:border-cyan"
+                    {...register("sellerWebsite")}
+                  />
+                  {errors.sellerWebsite && (
+                    <p className="text-sm text-red-500">
+                      {errors.sellerWebsite.message as string}
+                    </p>
+                  )}
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="sellerImage">Profile Image URL</Label>
+                  <Input
+                    id="sellerImage"
+                    placeholder="e.g., https://example.com/profile.jpg"
+                    className="bg-background/50 border-cyan/20 focus:border-cyan"
+                    {...register("sellerImage")}
+                  />
+                  {errors.sellerImage && (
+                    <p className="text-sm text-red-500">
+                      {errors.sellerImage.message as string}
+                    </p>
+                  )}
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="sellerAddress">Address</Label>
+                  <Input
+                    id="sellerAddress"
+                    placeholder="e.g., 123 Main St"
+                    className="bg-background/50 border-cyan/20 focus:border-cyan"
+                    {...register("sellerAddress")}
+                  />
+                  {errors.sellerAddress && (
+                    <p className="text-sm text-red-500">
+                      {errors.sellerAddress.message as string}
                     </p>
                   )}
                 </div>
@@ -1017,13 +880,56 @@ export const AddCarForm = () => {
                     id="sellerCity"
                     placeholder="e.g., Los Angeles"
                     className="bg-background/50 border-cyan/20 focus:border-cyan"
-                    {...register("sellerCity", {
-                      required: "City is required",
-                    })}
+                    {...register("sellerCity")}
                   />
                   {errors.sellerCity && (
                     <p className="text-sm text-red-500">
-                      {errors.sellerCity.message}
+                      {errors.sellerCity.message as string}
+                    </p>
+                  )}
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="sellerState">State</Label>
+                  <Input
+                    id="sellerState"
+                    placeholder="e.g., CA"
+                    className="bg-background/50 border-cyan/20 focus:border-cyan"
+                    {...register("sellerState")}
+                  />
+                  {errors.sellerState && (
+                    <p className="text-sm text-red-500">
+                      {errors.sellerState.message as string}
+                    </p>
+                  )}
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="sellerZip">Zip Code</Label>
+                  <Input
+                    id="sellerZip"
+                    placeholder="e.g., 90001"
+                    className="bg-background/50 border-cyan/20 focus:border-cyan"
+                    {...register("sellerZip")}
+                  />
+                  {errors.sellerZip && (
+                    <p className="text-sm text-red-500">
+                      {errors.sellerZip.message as string}
+                    </p>
+                  )}
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="sellerCountry">Country</Label>
+                  <Input
+                    id="sellerCountry"
+                    placeholder="e.g., USA"
+                    className="bg-background/50 border-cyan/20 focus:border-cyan"
+                    {...register("sellerCountry")}
+                  />
+                  {errors.sellerCountry && (
+                    <p className="text-sm text-red-500">
+                      {errors.sellerCountry.message as string}
                     </p>
                   )}
                 </div>

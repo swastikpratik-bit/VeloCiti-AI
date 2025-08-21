@@ -4,7 +4,8 @@ import {
   TabsList,
   TabsTrigger,
 } from "@/src/components/ui/tabs";
-import { AddCarForm, GenerateImage } from "./components";
+import { AddCarForm } from "./add-car";
+import { GenerateImage } from "./generate-image";
 
 export default function SellPage() {
   return (

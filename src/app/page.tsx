@@ -17,7 +17,6 @@ export default function Home() {
       <SellWithUs />
       <Testimonials />
       <FAQSection />
-      <Footer />
     </main>
   );
 }
