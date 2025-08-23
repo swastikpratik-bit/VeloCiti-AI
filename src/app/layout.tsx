@@ -6,6 +6,7 @@ import { Inter, Outfit } from "next/font/google";
 import { Header } from "../components/header/header";
 import { Toaster } from "../components/ui/sonner";
 import "./globals.css";
+import { NavigationDock } from "../components/navigation-dock";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -50,6 +51,7 @@ export default async function RootLayout({
             <Header />
 
             {children}
+            <NavigationDock />
             <Toaster />
             <Footer />
           </ImageKitProvider>
