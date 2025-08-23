@@ -110,7 +110,7 @@ export const HeaderAuth = ({ user }: HeaderAuthProps) => {
           </PopoverContent>
         </Popover>
       ) : (
-        <Link href="/api/auth/signin">
+        <Link href="/login">
           <Button className="rounded-xl px-4 py-2 shadow-sm">Login</Button>
         </Link>
       )}

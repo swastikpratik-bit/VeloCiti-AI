@@ -3,9 +3,9 @@ import { ThemeProvider } from "@/src/components/theme-provider";
 import { ImageKitProvider } from "@imagekit/next";
 import type { Metadata, Viewport } from "next";
 import { Inter, Outfit } from "next/font/google";
-import "./globals.css";
 import { Header } from "../components/header/header";
 import { Toaster } from "../components/ui/sonner";
+import "./globals.css";
 
 const inter = Inter({
   subsets: ["latin"],

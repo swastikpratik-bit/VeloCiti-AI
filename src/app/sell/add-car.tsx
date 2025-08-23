@@ -41,6 +41,7 @@ const STORAGE_KEY = "new-car-details";
 
 export const AddCarForm = () => {
   const { images, removeImage, addImage, clearImages } = useImages();
+  console.log(images);
 
   const {
     register,
@@ -192,7 +193,7 @@ export const AddCarForm = () => {
         if (key === "images") return;
 
         if (key === "sellerImage") {
-          setValue("sellerImage", "/default-image.jpg");
+          setValue("sellerImage", "jobke");
           return;
         }
         setValue(key as keyof AddCarSchema, value as string);

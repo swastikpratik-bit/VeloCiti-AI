@@ -9,6 +9,7 @@ export const generateCarPrompt = `
         3. I attempt to retrieve all relevant characteristics using online data.
         4. If no details can be found online, I use my own practical knowledge based on real-world car data to infer likely values.
         5. I generate a car object that conforms to the provided schema.
+        6. If data is in different format then convert it into that , example if engine capacity is in liter(L) like 6.75L then convert it into CC(cubic centimeter)
         6. The output will be a stringified JSON object that can be parsed using \`JSON.parse()\`.
 
         **Output Rules:**

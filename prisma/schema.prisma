@@ -14,12 +14,15 @@ model User {
   emailVerified     DateTime?
   image             String?
   accounts          Account[]
+  sessions          Session[]          // Added for NextAuth
   createdAt         DateTime           @default(now())
   updatedAt         DateTime           @updatedAt
   cars              Car[]
   savedCars         Car[]              @relation("SavedCars")
   testDriveRequests TestDriveRequest[]
   messages          Message[]
+
+  @@index([email]) // Added for better performance
 }
 
 model Account {
@@ -41,6 +44,30 @@ model Account {
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@id([provider, providerAccountId])
+  @@index([userId, provider]) // Added for better performance
+}
+
+// Added for NextAuth database sessions
+model Session {
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("sessions")
+}
+
+// Added for NextAuth email verification
+model VerificationToken {
+  identifier String
+  token      String
+  expires    DateTime
+
+  @@id([identifier, token])
+  @@map("verificationtokens")
 }
 
 model Car {
@@ -73,17 +100,17 @@ model Car {
 
 model CarSpecification {
   id             String   @id @default(cuid())
-  engineCapacity Int? //cc
+  engineCapacity Float? //cc
   doors          Int? //2-4
   seats          Int? //2-7
-  topSpeed       Int? //km/h
+  topSpeed       Float? //km/h
   acceleration   Float? //0-100 km/h
-  horsepower     Int? //hp
-  torque         Int? //Nm
-  length         Int? //cm
-  width          Int? //cm
-  height         Int? //cm
-  weight         Int? //kg
+  horsepower     Float? //hp
+  torque         Float? //Nm
+  length         Float? //cm
+  width          Float? //cm
+  height         Float? //cm
+  weight         Float? //kg
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
 

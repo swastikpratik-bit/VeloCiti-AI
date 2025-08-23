@@ -30,17 +30,17 @@ export const addCarSchema = z.object({
   fuelType: z.enum(carFuelTypes),
 
   // Specification details
-  engineCapacity: z.coerce.number().positive().optional(),
-  doors: z.coerce.number().int().positive().optional(),
-  seats: z.coerce.number().int().positive().optional(),
-  topSpeed: z.coerce.number().int().positive().optional(),
-  acceleration: z.coerce.number().int().positive().optional(),
-  horsepower: z.coerce.number().int().positive().optional(),
-  torque: z.coerce.number().int().positive().optional(),
-  length: z.coerce.number().positive().optional(),
-  width: z.coerce.number().positive().optional(),
-  height: z.coerce.number().positive().optional(),
-  weight: z.coerce.number().positive().optional(),
+  engineCapacity: z.coerce.number().positive().optional(), // Float?
+  doors: z.coerce.number().int().positive().optional(), // Int?
+  seats: z.coerce.number().int().positive().optional(), // Int?
+  topSpeed: z.coerce.number().positive().optional(), // Float?
+  acceleration: z.coerce.number().positive().optional(), // Float?
+  horsepower: z.coerce.number().positive().optional(), // Float?
+  torque: z.coerce.number().positive().optional(), // Float?
+  length: z.coerce.number().positive().optional(), // Float?
+  width: z.coerce.number().positive().optional(), // Float?
+  height: z.coerce.number().positive().optional(), // Float?
+  weight: z.coerce.number().positive().optional(), // Float?
 
   // Seller details
   sellerName: z.string().min(2, "Seller name must be at least 2 characters"),

@@ -1,4 +1,4 @@
-"server-only";
+import "server-only";
 
 import { google } from "@ai-sdk/google";
 import { generateText, LanguageModelV1, zodSchema } from "ai";
