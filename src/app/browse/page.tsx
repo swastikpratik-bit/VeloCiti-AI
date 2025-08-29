@@ -15,6 +15,8 @@ import {
 } from "lucide-react";
 import { Button } from "@/src/components/ui/button";
 import { Badge } from "@/src/components/ui/badge";
+import Link from 'next/link'
+
 
 const cars = [
   {
@@ -106,7 +108,6 @@ const cars = [
 const filters = {
   priceRange: ["Under $50k", "$50k - $100k", "$100k - $200k", "Over $200k"],
   fuelType: ["Electric", "Hybrid", "Gasoline"],
-  year: ["2024", "2023", "2022", "2021"],
   transmission: ["Auto", "Manual"],
 };
 
@@ -158,8 +159,8 @@ export default function BrowsePage() {
           switch (filterType) {
             case "fuelType":
               return values.includes(car.fuel);
-            case "year":
-              return values.includes(car.year.toString());
+            // case "year":
+            //   return values.includes(car.year.toString());
             case "transmission":
               return values.includes(car.transmission);
             default:
@@ -191,6 +192,9 @@ export default function BrowsePage() {
 
   // Use grid mode for mobile, respect viewMode for desktop
   const effectiveViewMode = isMobile ? "grid" : viewMode;
+
+
+ 
 
   return (
     <main className="min-h-screen">
@@ -357,7 +361,8 @@ export default function BrowsePage() {
             }`}
           >
             {filteredCars.map((car, index) => (
-              <motion.div
+              <Link href={`/browse/${car.id}`} key={car.id} >
+                <motion.div
                 key={car.id}
                 layout
                 initial={{ opacity: 0, y: 30 }}
@@ -366,6 +371,7 @@ export default function BrowsePage() {
                 className={`group cursor-pointer ${
                   effectiveViewMode === "list" && !isMobile ? "flex gap-6" : ""
                 }`}
+              
               >
                 <div
                   className={`glass rounded-2xl overflow-hidden hover:glow-cyan transition-all duration-300 group-hover:scale-105 ${
@@ -500,7 +506,8 @@ export default function BrowsePage() {
                     )}
                   </div>
                 </div>
-              </motion.div>
+                </motion.div>
+              </Link>
             ))}
           </motion.div>
 

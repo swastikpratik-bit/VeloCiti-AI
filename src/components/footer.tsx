@@ -71,15 +71,15 @@ export function Footer() {
               <div className="space-y-3 mb-6">
                 <div className="flex items-center gap-3 text-sm">
                   <Mail className="h-4 w-4 text-cyan" />
-                  <span>hello@aicars.com</span>
+                  <span>hello@velociti.com</span>
                 </div>
                 <div className="flex items-center gap-3 text-sm">
                   <Phone className="h-4 w-4 text-cyan" />
-                  <span>1-800-AI-CARS</span>
+                  <span>+91 9999999999</span>
                 </div>
                 <div className="flex items-center gap-3 text-sm">
                   <MapPin className="h-4 w-4 text-cyan" />
-                  <span>San Francisco, CA</span>
+                  <span>Gorakhpur ,UP</span>
                 </div>
               </div>
 
@@ -132,7 +132,7 @@ export function Footer() {
         </div>
 
         {/* Newsletter signup */}
-        <motion.div
+        {/* <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.2 }}
@@ -164,7 +164,7 @@ export function Footer() {
 </div>
 
           </div>
-        </motion.div>
+        </motion.div> */}
 
         {/* Bottom section */}
         <motion.div
