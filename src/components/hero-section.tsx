@@ -4,9 +4,11 @@ import { motion } from 'framer-motion'
 import { ArrowRight, Sparkles, Zap } from 'lucide-react'
 import { Button } from '@/src/components/ui/button'
 import { useTheme } from './theme-provider'
+import { useRouter } from 'next/navigation'
 
 export function HeroSection() {
   const { theme } = useTheme()
+  const router = useRouter()
 
   // Create particles
   const particles = Array.from({ length: 20 }, (_, i) => (
@@ -41,18 +43,7 @@ export function HeroSection() {
       <div className="absolute inset-0 bg-[url('/grid.svg')] opacity-20" />
 
       <div className="relative z-10 container mx-auto px-4 sm:px-6 lg:px-8 text-center">
-        {/* <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.2 }}
-          className="mb-8"
-        > */}
-          {/* <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-cyan/10 border border-cyan/20 text-cyan text-sm font-medium mb-6">
-            <Sparkles className="h-4 w-4" />
-            AI-Powered Car Marketplace
-            <Zap className="h-4 w-4" />
-          </div> */}
-        {/* </motion.div> */}
+       
 
         <motion.h1
           initial={{ opacity: 0, y: 30 }}
@@ -98,22 +89,6 @@ export function HeroSection() {
               </div>
             </div>
             
-            {/* Floating elements */}
-            {/* <motion.div
-              animate={{ y: [-10, 10, -10] }}
-              transition={{ duration: 4, repeat: Infinity }}
-              className="absolute -top-4 -left-4 p-3 rounded-full glass"
-            >
-              <Sparkles className="h-6 w-6 text-cyan" />
-            </motion.div> */}
-            
-            {/* <motion.div
-              animate={{ y: [10, -10, 10] }}
-              transition={{ duration: 3, repeat: Infinity }}
-              className="absolute -bottom-4 -right-4 p-3 rounded-full glass"
-            >
-              <Zap className="h-6 w-6 text-cyan" />
-            </motion.div> */}
           </div>
         </motion.div>
 
@@ -127,6 +102,7 @@ export function HeroSection() {
           <Button
             size="lg"
             className="bg-cyan hover:bg-cyan/80 text-black font-semibold px-8 py-4 rounded-full magnetic-button group"
+            onClick={() => router.push('/sell')}
           >
             Create Your AI Car
             <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
@@ -136,6 +112,7 @@ export function HeroSection() {
             variant="outline"
             size="lg"
             className="border-cyan/50 text-cyan hover:bg-cyan/10 px-8 py-4 rounded-full magnetic-button"
+            onClick={() => router.push('/browse')}
           >
             Browse Marketplace
           </Button>

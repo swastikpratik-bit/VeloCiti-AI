@@ -1,6 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
+import Link from "next/link";
 
 export function Logo() {
   return (
@@ -8,9 +9,9 @@ export function Logo() {
       className="flex items-center space-x-2"
       whileHover={{ scale: 1.05 }}
     >
-      <a href="/" className="text-xl font-outfit font-bold">
+      <Link href="/" className="text-xl font-outfit font-bold">
         VeloCiti AI
-      </a>
+      </Link>
     </motion.div>
   );
 }

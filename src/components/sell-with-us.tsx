@@ -3,6 +3,7 @@
 import { motion } from 'framer-motion'
 import { Zap, Camera, TrendingUp, Shield, Clock, Users } from 'lucide-react'
 import { Button } from '@/src/components/ui/button'
+import { useRouter } from 'next/navigation'
 
 const benefits = [
   {
@@ -44,6 +45,7 @@ const benefits = [
 ]
 
 export function SellWithUs() {
+  const router = useRouter()
   return (
     <section className="py-20 relative">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
@@ -137,6 +139,7 @@ export function SellWithUs() {
             <Button 
               size="lg" 
               className="bg-cyan hover:bg-cyan/80 text-black font-semibold px-8 py-4 rounded-full magnetic-button"
+              onClick={() => router.push('/sell')}
             >
               Start Selling Now
             </Button>
@@ -144,6 +147,7 @@ export function SellWithUs() {
               variant="outline" 
               size="lg"
               className="border-cyan/50 text-cyan hover:bg-cyan/10 px-8 py-4 rounded-full magnetic-button"
+              onClick={() => router.push('/sell')}
             >
               Learn More
             </Button>

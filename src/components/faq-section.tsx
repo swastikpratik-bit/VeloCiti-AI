@@ -116,41 +116,7 @@ export function FAQSection() {
                 </AnimatePresence>
               </motion.div>
             ))}
-          </div>
-
-          {/* Contact support */}
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.4 }}
-            viewport={{ once: true }}
-            className="text-center mt-12"
-          >
-            <div className="glass rounded-2xl p-8">
-              <h3 className="text-xl font-outfit font-semibold mb-3">
-                Still have questions?
-              </h3>
-              <p className="text-muted-foreground mb-6">
-                Our support team is here to help 24/7
-              </p>
-              <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <motion.button
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  className="px-6 py-3 bg-cyan text-black rounded-full font-semibold hover:bg-cyan/80 transition-colors"
-                >
-                  Contact Support
-                </motion.button>
-                <motion.button
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  className="px-6 py-3 border border-cyan/50 text-cyan rounded-full hover:bg-cyan/10 transition-colors"
-                >
-                  Schedule a Demo
-                </motion.button>
-              </div>
-            </div>
-          </motion.div>
+          </div>        
         </div>
       </div>
     </section>

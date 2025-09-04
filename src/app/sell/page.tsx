@@ -6,8 +6,15 @@ import {
 } from "@/src/components/ui/tabs";
 import { AddCarForm } from "./add-car";
 import { GenerateImage } from "./generate-image";
+import { auth } from "@/src/auth";
+import { redirect } from "next/navigation";
 
-export default function SellPage() {
+export default async function SellPage() {
+  const session = await auth();
+  
+  if (!session) {
+    redirect("/login");
+  }
   return (
     <main className="min-h-screen">
       {/* Hero Section */}

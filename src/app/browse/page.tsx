@@ -1,167 +1,74 @@
 "use client";
 
-import { Badge } from "@/src/components/ui/badge";
 import { Button } from "@/src/components/ui/button";
 import { AnimatePresence, motion } from "framer-motion";
 import {
   ChevronDown,
-  Eye,
   Filter,
   Grid,
-  Heart,
   List,
   Search,
-  Zap
 } from "lucide-react";
-import Link from 'next/link';
-import { useEffect, useState } from "react";
-
-
-const cars = [
-  {
-    id: 1,
-    name: "Tesla Model S Plaid",
-    price: "$129,990",
-    image:
-      "https://images.pexels.com/photos/3802508/pexels-photo-3802508.jpeg?auto=compress&cs=tinysrgb&w=800",
-    year: 2024,
-    mileage: "0 miles",
-    fuel: "Electric",
-    transmission: "Auto",
-    location: "San Francisco, CA",
-    aiGenerated: true,
-    tags: ["Electric", "Luxury", "Performance"],
-  },
-  {
-    id: 2,
-    name: "BMW i8 Roadster",
-    price: "$148,495",
-    image:
-      "https://images.pexels.com/photos/3136673/pexels-photo-3136673.jpeg?auto=compress&cs=tinysrgb&w=800",
-    year: 2023,
-    mileage: "1,200 miles",
-    fuel: "Hybrid",
-    transmission: "Auto",
-    location: "Los Angeles, CA",
-    aiGenerated: false,
-    tags: ["Hybrid", "Sports", "Convertible"],
-  },
-  {
-    id: 3,
-    name: "Porsche Taycan Turbo S",
-    price: "$185,000",
-    image:
-      "https://images.pexels.com/photos/3764984/pexels-photo-3764984.jpeg?auto=compress&cs=tinysrgb&w=800",
-    year: 2024,
-    mileage: "500 miles",
-    fuel: "Electric",
-    transmission: "Auto",
-    location: "Miami, FL",
-    aiGenerated: true,
-    tags: ["Electric", "Luxury", "Performance"],
-  },
-  {
-    id: 4,
-    name: "Lamborghini Huracán",
-    price: "$208,571",
-    image:
-      "https://images.pexels.com/photos/2365572/pexels-photo-2365572.jpeg?auto=compress&cs=tinysrgb&w=800",
-    year: 2023,
-    mileage: "800 miles",
-    fuel: "Gasoline",
-    transmission: "Auto",
-    location: "New York, NY",
-    aiGenerated: false,
-    tags: ["Gasoline", "Supercar", "Performance"],
-  },
-  {
-    id: 5,
-    name: "Audi e-tron GT",
-    price: "$102,400",
-    image:
-      "https://images.pexels.com/photos/3729464/pexels-photo-3729464.jpeg?auto=compress&cs=tinysrgb&w=800",
-    year: 2024,
-    mileage: "0 miles",
-    fuel: "Electric",
-    transmission: "Auto",
-    location: "Seattle, WA",
-    aiGenerated: true,
-    tags: ["Electric", "Luxury", "Sedan"],
-  },
-  {
-    id: 6,
-    name: "Mercedes-AMG GT",
-    price: "$118,600",
-    image:
-      "https://images.pexels.com/photos/3802510/pexels-photo-3802510.jpeg?auto=compress&cs=tinysrgb&w=800",
-    year: 2023,
-    mileage: "2,100 miles",
-    fuel: "Gasoline",
-    transmission: "Auto",
-    location: "Chicago, IL",
-    aiGenerated: false,
-    tags: ["Gasoline", "Sports", "Coupe"],
-  },
-];
-
-const filters = {
-  priceRange: ["Under $50k", "$50k - $100k", "$100k - $200k", "Over $200k"],
-  fuelType: ["Electric", "Hybrid", "Gasoline"],
-  transmission: ["Auto", "Manual"],
-};
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { CarCard } from "@/src/components/browse-car-card";
+import { BROWSE_CARS, FILTERS } from "@/src/constants/browse-cars";
 
 export default function BrowsePage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
   const [showFilters, setShowFilters] = useState(false);
-  const [selectedFilters, setSelectedFilters] = useState<
-    Record<string, string[]>
-  >({});
+  const [selectedFilters, setSelectedFilters] = useState<Record<string, string[]>>({});
   const [likedCars, setLikedCars] = useState<number[]>([]);
-  const [filteredCars, setFilteredCars] = useState(cars);
   const [isMobile, setIsMobile] = useState(false);
+  const [sortBy, setSortBy] = useState("newest");
 
   // Check if mobile and force grid mode
   useEffect(() => {
     const checkMobile = () => {
-      const mobile = window.innerWidth < 768; // md breakpoint
+      const mobile = window.innerWidth < 768;
       setIsMobile(mobile);
       if (mobile) {
-        setViewMode("grid"); // Force grid on mobile
+        setViewMode("grid");
       }
     };
 
     checkMobile();
     window.addEventListener("resize", checkMobile);
-
     return () => window.removeEventListener("resize", checkMobile);
   }, []);
 
-  useEffect(() => {
-    let filtered = cars;
+  // Memoized filtered and sorted cars
+  const filteredCars = useMemo(() => {
+    let filtered = BROWSE_CARS;
 
-    // Search filter
     if (searchQuery) {
+      const query = searchQuery.toLowerCase();
       filtered = filtered.filter(
         (car) =>
-          car.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          car.tags.some((tag) =>
-            tag.toLowerCase().includes(searchQuery.toLowerCase())
-          )
+          car.name.toLowerCase().includes(query) ||
+          car.tags.some((tag) => tag.toLowerCase().includes(query))
       );
     }
 
-    // Other filters
     Object.entries(selectedFilters).forEach(([filterType, values]) => {
       if (values.length > 0) {
         filtered = filtered.filter((car) => {
           switch (filterType) {
             case "fuelType":
               return values.includes(car.fuel);
-            // case "year":
-            //   return values.includes(car.year.toString());
             case "transmission":
               return values.includes(car.transmission);
+            case "priceRange":
+              const price = parseInt(car.price.replace(/[$,]/g, ""));
+              return values.some(range => {
+                switch (range) {
+                  case "Under $50k": return price < 50000;
+                  case "$50k - $100k": return price >= 50000 && price <= 100000;
+                  case "$100k - $200k": return price >= 100000 && price <= 200000;
+                  case "Over $200k": return price > 200000;
+                  default: return true;
+                }
+              });
             default:
               return true;
           }
@@ -169,28 +76,45 @@ export default function BrowsePage() {
       }
     });
 
-    setFilteredCars(filtered);
-  }, [searchQuery, selectedFilters]);
+    // Sort the filtered results
+    filtered.sort((a, b) => {
+      const priceA = parseInt(a.price.replace(/[$,]/g, ""));
+      const priceB = parseInt(b.price.replace(/[$,]/g, ""));
+      const mileageA = parseInt(a.mileage.replace(/[^0-9]/g, "")) || 0;
+      const mileageB = parseInt(b.mileage.replace(/[^0-9]/g, "")) || 0;
 
-  const toggleFilter = (filterType: string, value: string) => {
+      switch (sortBy) {
+        case "price-low":
+          return priceA - priceB;
+        case "price-high":
+          return priceB - priceA;
+        case "mileage-low":
+          return mileageA - mileageB;
+        case "newest":
+        default:
+          return b.year - a.year;
+      }
+    });
+
+    return filtered;
+  }, [searchQuery, selectedFilters, sortBy]);
+
+  const toggleFilter = useCallback((filterType: string, value: string) => {
     setSelectedFilters((prev) => ({
       ...prev,
       [filterType]: prev[filterType]?.includes(value)
         ? prev[filterType].filter((v) => v !== value)
         : [...(prev[filterType] || []), value],
     }));
-  };
+  }, []);
 
-  const toggleLike = (carId: number) => {
+  const toggleLike = useCallback((carId: number) => {
     setLikedCars((prev) =>
       prev.includes(carId)
         ? prev.filter((id) => id !== carId)
         : [...prev, carId]
     );
-  };
-
-  // Use grid mode for mobile, respect viewMode for desktop
-  const effectiveViewMode = isMobile ? "grid" : viewMode;
+  }, []);
 
 
  
@@ -297,7 +221,7 @@ export default function BrowsePage() {
                 >
                   <div className="pt-6 border-t border-white/10 mt-6">
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                      {Object.entries(filters).map(([filterType, options]) => (
+                      {Object.entries(FILTERS).map(([filterType, options]) => (
                         <div key={filterType}>
                           <h3 className="font-semibold mb-3 capitalize">
                             {filterType.replace(/([A-Z])/g, " $1").trim()}
@@ -336,13 +260,17 @@ export default function BrowsePage() {
           {/* Results Count */}
           <div className="flex justify-between items-center mb-6">
             <p className="text-muted-foreground">
-              Showing {filteredCars.length} of {cars.length} cars
+              Showing {filteredCars.length} of {BROWSE_CARS.length} cars
             </p>
-            <select className="bg-background/50 border border-white/20 rounded-lg px-3 py-2 text-sm">
-              <option>Sort by: Newest</option>
-              <option>Price: Low to High</option>
-              <option>Price: High to Low</option>
-              <option>Mileage: Low to High</option>
+            <select 
+              value={sortBy}
+              onChange={(e) => setSortBy(e.target.value)}
+              className="bg-background/50 border border-white/20 rounded-lg px-3 py-2 text-sm"
+            >
+              <option value="newest">Sort by: Newest</option>
+              <option value="price-low">Price: Low to High</option>
+              <option value="price-high">Price: High to Low</option>
+              <option value="mileage-low">Mileage: Low to High</option>
             </select>
           </div>
         </div>
@@ -354,159 +282,21 @@ export default function BrowsePage() {
           <motion.div
             layout
             className={`grid gap-6 ${
-              effectiveViewMode === "grid"
+              isMobile || viewMode === "grid"
                 ? "grid-cols-1 md:grid-cols-2 xl:grid-cols-3"
                 : "grid-cols-1"
             }`}
           >
             {filteredCars.map((car, index) => (
-              <Link href={`/browse/${car.id}`} key={car.id} >
-                <motion.div
+              <CarCard
                 key={car.id}
-                layout
-                initial={{ opacity: 0, y: 30 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: index * 0.1 }}
-                className={`group cursor-pointer ${
-                  effectiveViewMode === "list" && !isMobile ? "flex gap-6" : ""
-                }`}
-              
-              >
-                <div
-                  className={`glass rounded-2xl overflow-hidden hover:glow-cyan transition-all duration-300 group-hover:scale-105 ${
-                    effectiveViewMode === "list" && !isMobile
-                      ? "flex w-full"
-                      : ""
-                  }`}
-                >
-                  <div
-                    className={`relative ${
-                      effectiveViewMode === "list" && !isMobile
-                        ? "w-80 flex-shrink-0"
-                        : ""
-                    }`}
-                  >
-                    <div
-                      className={`overflow-hidden ${
-                        effectiveViewMode === "list" && !isMobile
-                          ? "h-48"
-                          : "aspect-video"
-                      }`}
-                    >
-                      <img
-                        src={car.image}
-                        alt={car.name}
-                        className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
-                      />
-                    </div>
-
-                    {/* AI Badge */}
-                    {car.aiGenerated && (
-                      <Badge className="absolute top-3 left-3 bg-cyan/90 text-black">
-                        <Zap className="h-3 w-3 mr-1" />
-                        AI Enhanced
-                      </Badge>
-                    )}
-
-                    {/* Action buttons */}
-                    <div className="absolute top-3 right-3 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                      <motion.button
-                        whileHover={{ scale: 1.1 }}
-                        whileTap={{ scale: 0.9 }}
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          toggleLike(car.id);
-                        }}
-                        className={`p-2 rounded-full glass ${
-                          likedCars.includes(car.id)
-                            ? "text-red-500"
-                            : "text-white"
-                        }`}
-                      >
-                        <Heart
-                          className={`h-4 w-4 ${
-                            likedCars.includes(car.id) ? "fill-current" : ""
-                          }`}
-                        />
-                      </motion.button>
-                      <motion.button
-                        whileHover={{ scale: 1.1 }}
-                        whileTap={{ scale: 0.9 }}
-                        className="p-2 rounded-full glass text-white"
-                      >
-                        <Eye className="h-4 w-4" />
-                      </motion.button>
-                    </div>
-                  </div>
-
-                  <div
-                    className={`p-6 ${
-                      effectiveViewMode === "list" && !isMobile
-                        ? "flex-1 flex flex-col justify-between"
-                        : ""
-                    }`}
-                  >
-                    <div>
-                      <h3 className="text-xl font-outfit font-semibold mb-2 group-hover:text-cyan transition-colors">
-                        {car.name}
-                      </h3>
-                      <p className="text-2xl font-bold text-cyan mb-4">
-                        {car.price}
-                      </p>
-
-                      <div
-                        className={`gap-3 text-sm text-muted-foreground mb-4 ${
-                          effectiveViewMode === "list" && !isMobile
-                            ? "flex flex-wrap"
-                            : "grid grid-cols-2"
-                        }`}
-                      >
-                        <div>
-                          <span className="font-medium">Year:</span> {car.year}
-                        </div>
-                        <div>
-                          <span className="font-medium">Fuel:</span> {car.fuel}
-                        </div>
-                        <div>
-                          <span className="font-medium">Mileage:</span>{" "}
-                          {car.mileage}
-                        </div>
-                        <div>
-                          <span className="font-medium">Location:</span>{" "}
-                          {car.location}
-                        </div>
-                      </div>
-
-                      <div className="flex flex-wrap gap-2 mb-4">
-                        {car.tags.map((tag) => (
-                          <Badge
-                            key={tag}
-                            variant="outline"
-                            className="border-cyan/30 text-cyan"
-                          >
-                            {tag}
-                          </Badge>
-                        ))}
-                      </div>
-                    </div>
-
-                    {effectiveViewMode === "list" && !isMobile && (
-                      <div className="flex gap-3">
-                        <Button className="flex-1 bg-cyan hover:bg-cyan/80 text-black">
-                          View Details
-                        </Button>
-                        <Button
-                          variant="outline"
-                          className="border-cyan/50 text-cyan"
-                        >
-                          Contact
-                        </Button>
-                      </div>
-                    )}
-                  </div>
-                </div>
-                </motion.div>
-              </Link>
+                car={car}
+                index={index}
+                viewMode={viewMode}
+                isLiked={likedCars.includes(car.id)}
+                onToggleLike={toggleLike}
+                isMobile={isMobile}
+              />
             ))}
           </motion.div>
 

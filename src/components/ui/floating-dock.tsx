@@ -1,6 +1,7 @@
 "use client";
 import { cn } from "@/src/lib/utils";
 import { useState } from "react";
+import Link from "next/link";
 
 export const Dock = ({
   items,
@@ -20,7 +21,7 @@ export const Dock = ({
     >
       {items.map((item) => (
         <div key={item.title} className="relative">
-          <a
+          <Link
             href={item.href}
             className="flex items-center justify-center w-10 h-10 rounded-full glass hover:glow-cyan transition-colors duration-200"
             onMouseEnter={() => setHoveredItem(item.title)}
@@ -29,7 +30,7 @@ export const Dock = ({
             <div className="w-5 h-5 text-cyan flex items-center justify-center">
               {item.icon}
             </div>
-          </a>
+          </Link>
 
           {hoveredItem === item.title && (
             <div className="absolute -top-12 left-1/2 transform -translate-x-1/2 bg-gray-900 text-white px-2 py-1 rounded-md text-sm whitespace-nowrap z-10 shadow-lg">
