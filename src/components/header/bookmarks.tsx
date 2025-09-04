@@ -14,7 +14,7 @@ import { Image } from "@imagekit/next";
 import { BookmarkIcon } from "lucide-react";
 import Link from "next/link";
 import { Suspense } from "react";
-import { RemoveBookmark } from "./remove-bookmarks";
+import { RemoveBookmark } from "@/src/components/header/remove-bookmark";
 
 export const Bookmarks = async () => {
   return (

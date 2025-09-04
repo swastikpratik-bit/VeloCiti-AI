@@ -1,42 +1,37 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import {
   ArrowLeft,
-  Heart,
-  Share2,
-  Eye,
-  Star,
-  MapPin,
   Calendar,
-  Gauge,
-  Clock,
-  PenTool as Tool,
-  Shield,
-  Phone,
-  Mail,
-  MessageCircle,
-  Zap,
   ChevronLeft,
   ChevronRight,
+  Clock,
+  Eye,
+  Gauge,
+  Heart,
+  Mail,
+  MapPin,
+  MessageCircle,
+  Phone,
+  Share2,
+  Shield,
+  Star,
+  PenTool as Tool,
+  Zap,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
 
-import { Button } from "@/src/components/ui/button";
 import { Badge } from "@/src/components/ui/badge";
+import { Button } from "@/src/components/ui/button";
+import { Calendar as CalendarComponent } from "@/src/components/ui/calendar";
 import {
   Card,
   CardContent,
   CardHeader,
   CardTitle,
 } from "@/src/components/ui/card";
-import {
-  Tabs,
-  TabsContent,
-  TabsList,
-  TabsTrigger,
-} from "@/src/components/ui/tabs";
 import {
   Dialog,
   DialogContent,
@@ -45,17 +40,22 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/src/components/ui/dialog";
-import { Calendar as CalendarComponent } from "@/src/components/ui/calendar";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from "@/src/components/ui/popover";
 import { ScrollArea, ScrollBar } from "@/src/components/ui/scroll-area";
-import { toast } from "sonner";
+import {
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
+} from "@/src/components/ui/tabs";
 import { format } from "date-fns";
 import { FaDoorOpen, FaWrench } from "react-icons/fa";
 import { PiEngineFill, PiSeatFill } from "react-icons/pi";
+import { toast } from "sonner";
 
 // Mock car data - in real app this would come from API
 const mockCar = {

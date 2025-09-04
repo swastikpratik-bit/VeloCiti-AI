@@ -7,9 +7,7 @@ const nextConfig = {
   images: {
     unoptimized: true,         // optional, keeps your current behavior
   },
-  experimental: {
-    appDir: true,              // ensure App Router is enabled
-  },
+
   // Remove output: 'export' because API routes like NextAuth need server
 };
 

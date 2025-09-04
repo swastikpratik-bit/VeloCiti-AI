@@ -1,19 +1,7 @@
 "use client";
 
-import { useState } from "react";
-import { motion } from "framer-motion";
-import {
-  Github,
-  Mail,
-  Eye,
-  EyeOff,
-  ArrowRight,
-  Car,
-  Sparkles,
-} from "lucide-react";
+import { useTheme } from "@/src/components/theme-provider";
 import { Button } from "@/src/components/ui/button";
-import { Input } from "@/src/components/ui/input";
-import { Label } from "@/src/components/ui/label";
 import {
   Card,
   CardContent,
@@ -21,10 +9,13 @@ import {
   CardHeader,
   CardTitle,
 } from "@/src/components/ui/card";
-import { Separator } from "@/src/components/ui/separator";
-import { useTheme } from "@/src/components/theme-provider";
+import { motion } from "framer-motion";
+import {
+  Github,
+  Mail
+} from "lucide-react";
+import { useState } from "react";
 import { toast } from "sonner";
-import Link from "next/link";
 // import { signIn } from "@/src/auth";
 import { signIn } from "next-auth/react";
 

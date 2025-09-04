@@ -25,6 +25,10 @@ import {
   SelectValue,
 } from "@/src/components/ui/select";
 import { Textarea } from "@/src/components/ui/textarea";
+import { CarFuelType, CarType, carTypes } from "@/src/constants/cars";
+import { autoGenerateCar } from "@/src/lib/actions/ai-action";
+import { addNewCar } from "@/src/lib/actions/cars-actions";
+import { addCarSchema, AddCarSchema } from "@/src/lib/zod";
 import { useImages } from "@/src/store/image";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { motion } from "framer-motion";
@@ -32,10 +36,6 @@ import { WandSparkles, X } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
-import { addNewCar } from "@/src/lib/actions/cars-actions";
-import { addCarSchema, AddCarSchema } from "@/src/lib/zod";
-import { autoGenerateCar } from "@/src/lib/actions/ai-action";
-import { CarFuelType, CarType, carTypes } from "@/src/constants/cars";
 
 const STORAGE_KEY = "new-car-details";
 

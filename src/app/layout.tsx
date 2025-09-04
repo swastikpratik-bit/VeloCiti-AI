@@ -4,9 +4,9 @@ import { ImageKitProvider } from "@imagekit/next";
 import type { Metadata, Viewport } from "next";
 import { Inter, Outfit } from "next/font/google";
 import { Header } from "../components/header/header";
+import { NavigationDock } from "../components/navigation-dock";
 import { Toaster } from "../components/ui/sonner";
 import "./globals.css";
-import { NavigationDock } from "../components/navigation-dock";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -49,7 +49,6 @@ export default async function RootLayout({
             urlEndpoint={process.env.NEXT_PUBLIC_IMAGEKIT_URL_ENDPOINT || ""}
           >
             <Header />
-
             {children}
             <NavigationDock />
             <Toaster />

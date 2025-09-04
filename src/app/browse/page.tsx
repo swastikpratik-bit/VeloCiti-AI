@@ -1,21 +1,20 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { Badge } from "@/src/components/ui/badge";
+import { Button } from "@/src/components/ui/button";
+import { AnimatePresence, motion } from "framer-motion";
 import {
-  Search,
+  ChevronDown,
+  Eye,
   Filter,
   Grid,
-  List,
   Heart,
-  Eye,
-  Zap,
-  ChevronDown,
-  X,
+  List,
+  Search,
+  Zap
 } from "lucide-react";
-import { Button } from "@/src/components/ui/button";
-import { Badge } from "@/src/components/ui/badge";
-import Link from 'next/link'
+import Link from 'next/link';
+import { useEffect, useState } from "react";
 
 
 const cars = [

@@ -1,10 +1,10 @@
 'use client'
 
-import { useState, useEffect } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
-import { Search, Sparkles, Filter, Mic, Camera, MapPin, Calendar, DollarSign, Fuel, Settings, Zap, ArrowRight, Star } from 'lucide-react'
-import { Button } from '@/src/components/ui/button'
 import { Badge } from '@/src/components/ui/badge'
+import { Button } from '@/src/components/ui/button'
+import { AnimatePresence, motion } from 'framer-motion'
+import { ArrowRight, Calendar, Camera, Filter, MapPin, Mic, Search, Settings, Sparkles, Star, Zap } from 'lucide-react'
+import { useEffect, useState } from 'react'
 
 const searchSuggestions = [
   'Find me a red sports car under $50k with low mileage',
