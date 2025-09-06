@@ -5,6 +5,7 @@ import { extractJSON, isNotCarFound } from "../utils";
 
 export const findCar = async (carDescription: string) => {
   const result = await aiService.searchAgent(carDescription);
+  return result;
 
   const notFound = isNotCarFound(result);
 

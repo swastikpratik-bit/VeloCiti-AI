@@ -3,9 +3,10 @@ import "server-only";
 import { google } from "@ai-sdk/google";
 import { generateText, LanguageModelV1, zodSchema } from "ai";
 import { GEMINI_FLASH } from "@/src/constants/config";
-import { generateCarPrompt, searchCarPrompt } from "./prompts";
+import { generateCarPrompt, searchCarPrompt, searchCarPromptSystem } from "./prompts";
 import { addCarSchema } from "./zod";
 import { getAllCars } from "@/src/lib/actions/cars-actions";
+import { extractArrayFromResponse } from "./utils";
 
 class AIService {
   private model: LanguageModelV1;
@@ -42,50 +43,63 @@ class AIService {
       ],
     });
 
-    console.log("AI Response:", text);
+    console.log
     return text;
   };
+  
+
 
   searchAgent = async (carDescription: string) => {
-    const cars = await getAllCars();
+  const cars = await getAllCars();
 
-    const carsLists = cars.map((car) => ({
-      id: car.id,
-      name: car.name,
-      year: car.year,
-      mileage: car.mileage,
-      price: car.price,
-      image: car.images[0],
-      description: car.description,
-      brand: car.brand,
-      fuel: car.fuelType,
-      transmission: car.transmission,
-      availbleColors: car.colors,
-      location: car.location,
-      features: car.features,
-      carType: car.type,
-    }));
+  const carsLists = cars.map((car) => ({
+    id: car.id,
+    name: car.name,
+    year: car.year,
+    mileage: car.mileage,
+    price: car.price,
+    image: car.images[0],
+    description: car.description,
+    brand: car.brand,
+    fuel: car.fuelType,
+    transmission: car.transmission,
+    availableColors: car.colors,
+    location: car.location,
+    features: car.features,
+    carType: car.type,
+  }));
 
-    const { text } = await generateText({
-      model: this.searchModel,
-      messages: [
-        {
-          role: "assistant",
-          content: searchCarPrompt,
-        },
-        {
-          role: "assistant",
-          content: "The car list is: " + JSON.stringify(carsLists),
-        },
-        {
-          role: "user",
-          content: carDescription,
-        },
-      ],
-    });
+  const { text } = await generateText({
+    model: this.searchModel,
+    temperature: 0, // Set to 0 for maximum consistency
+    maxTokens: 100, // Limit tokens to prevent long explanations
+    messages: [
+      {
+        role: "system",
+        content: `${searchCarPromptSystem}
 
-    return text;
-  };
+CARS DATABASE:
+${JSON.stringify(carsLists)}
+
+REMEMBER: First character must be '[' or 'N'. Nothing else allowed.`
+      },
+      {
+        role: "user",
+        content: carDescription
+      },
+    ],
+  });
+
+  console.log("Raw AI Response:", text);
+  
+  // Extract JSON array if AI included extra text
+  const cleanedText = extractArrayFromResponse(text);
+  console.log("Cleaned Response:", cleanedText);
+  
+  return cleanedText;
+};
+
+
 }
 
 export const aiService = new AIService();
