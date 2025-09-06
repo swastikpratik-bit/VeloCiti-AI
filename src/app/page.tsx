@@ -1,5 +1,3 @@
-"use client";
-
 import { AISearchDemo } from "@/src/components/ai-search-demo";
 import { FAQSection } from "@/src/components/faq-section";
 import { FeaturedCars } from "@/src/components/featured-cars";

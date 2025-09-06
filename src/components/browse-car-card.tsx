@@ -13,7 +13,7 @@ interface CarCardProps {
   index: number;
   viewMode: "grid" | "list";
   isLiked: boolean;
-  onToggleLike: (carId: number) => void;
+  onToggleLike: (carId: string) => void;
   isMobile: boolean;
 }
 
@@ -58,17 +58,17 @@ export const CarCard = memo(function CarCard({
               }`}
             >
               <img
-                src={car.image}
+                src={car.images[0]}
                 alt={car.name}
                 className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
                 loading="lazy"
               />
             </div>
 
-            {car.aiGenerated && (
+            {car.isFeatured && (
               <Badge className="absolute top-3 left-3 bg-cyan/90 text-black">
                 <Zap className="h-3 w-3 mr-1" />
-                AI Enhanced
+                Featured
               </Badge>
             )}
 
@@ -110,7 +110,7 @@ export const CarCard = memo(function CarCard({
               <h3 className="text-xl font-outfit font-semibold mb-2 group-hover:text-cyan transition-colors">
                 {car.name}
               </h3>
-              <p className="text-2xl font-bold text-cyan mb-4">{car.price}</p>
+              <p className="text-2xl font-bold text-cyan mb-4">${car.price.toLocaleString()}</p>
 
               <div
                 className={`gap-3 text-sm text-muted-foreground mb-4 ${
@@ -123,10 +123,10 @@ export const CarCard = memo(function CarCard({
                   <span className="font-medium">Year:</span> {car.year}
                 </div>
                 <div>
-                  <span className="font-medium">Fuel:</span> {car.fuel}
+                  <span className="font-medium">Fuel:</span> {car.fuelType.toLowerCase()}
                 </div>
                 <div>
-                  <span className="font-medium">Mileage:</span> {car.mileage}
+                  <span className="font-medium">Mileage:</span> {car.mileage} miles
                 </div>
                 <div>
                   <span className="font-medium">Location:</span> {car.location}
@@ -134,15 +134,17 @@ export const CarCard = memo(function CarCard({
               </div>
 
               <div className="flex flex-wrap gap-2 mb-4">
-                {car.tags.map((tag) => (
-                  <Badge
-                    key={tag}
-                    variant="outline"
-                    className="border-cyan/30 text-cyan"
-                  >
-                    {tag}
+                <Badge variant="outline" className="border-cyan/30 text-cyan">
+                  {car.type.toLowerCase()}
+                </Badge>
+                <Badge variant="outline" className="border-cyan/30 text-cyan">
+                  {car.brand}
+                </Badge>
+                {car.isNew && (
+                  <Badge variant="outline" className="border-green-500/30 text-green-500">
+                    New
                   </Badge>
-                ))}
+                )}
               </div>
             </div>
 

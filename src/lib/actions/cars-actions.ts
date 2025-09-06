@@ -51,6 +51,9 @@ export const generateImage = async (text: string, name: string) => {
 };
 
 export const addNewCar = async (carData: AddCarSchema) => {
+  console.log("Adding new car with data:");
+  console.log(carData); 
+
   const session = await auth();
   const authUser = session?.user;
 
@@ -165,19 +168,11 @@ export const addNewCar = async (carData: AddCarSchema) => {
   revalidatePath("/");
 };
 
-export const getAllCars = cache(
-  async () => {
-    const cars = await prisma.car.findMany({
-      orderBy: {
-        createdAt: "desc",
-      },
-    });
-
-    return cars;
-  },
-  ["cars"],
-  { revalidate: 60 * 60 * 24 }
-);
+export const getAllCars = (async () => {
+  return await prisma.car.findMany({
+    orderBy: { createdAt: "desc" },
+  });
+});
 
 export const getCars = cache(
   async ({ page = 1, type = "all" }: { page?: number; type?: string }) => {

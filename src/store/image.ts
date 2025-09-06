@@ -12,7 +12,9 @@ export const useImages = create<InitialState>((set) => ({
   images: [],
   setImages: (images) => set({ images }),
 
-  addImage: (image) => set((state) => ({ images: [...state.images, image] })),
+  addImage: (image) => {
+      set((state) => ({ images: [...state.images, image] }))
+    },
 
   removeImage: (image) =>
     set((state) => ({ images: state.images.filter((img) => img !== image) })),

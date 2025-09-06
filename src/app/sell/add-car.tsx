@@ -41,7 +41,6 @@ const STORAGE_KEY = "new-car-details";
 
 export const AddCarForm = () => {
   const { images, removeImage, addImage, clearImages } = useImages();
-  console.log(images);
 
   const {
     register,
@@ -145,6 +144,7 @@ export const AddCarForm = () => {
 
   const onSubmit = useCallback(
     async (data: AddCarSchema) => {
+
       const toastId = toast.loading("Adding new car listing...");
 
       try {
@@ -168,7 +168,7 @@ export const AddCarForm = () => {
         setSubmitHandlerLoading(false);
       }
     },
-    [resetState, setSubmitHandlerLoading]
+    [resetState, setSubmitHandlerLoading, errors]
   );
 
   const autoGenerateHandler = useCallback(async () => {
@@ -212,7 +212,9 @@ export const AddCarForm = () => {
 
   useEffect(() => {
     setValue("images", images);
+  }, [images, setValue]);
 
+  useEffect(() => {
     const savedCarDetails = localStorage.getItem(STORAGE_KEY);
 
     if (!savedCarDetails) return;
@@ -224,12 +226,9 @@ export const AddCarForm = () => {
     Object.entries(parsedDetails).forEach(([key, value]) => {
       setValue(key as keyof AddCarSchema, value as string);
     });
-  }, [images, setValue]);
+  }, [setValue]);
 
-  const verifyClick = (data: AddCarSchema) => {
-    console.log("submitting......");
-    console.log(data);
-  };
+
 
   return (
     <motion.div
@@ -259,7 +258,9 @@ export const AddCarForm = () => {
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-8">
-          <form className="space-y-8" onSubmit={handleSubmit(onSubmit)}>
+          <form className="space-y-8" onSubmit={handleSubmit(onSubmit, (errors) => {
+            toast.error("Please fix the form errors before submitting");
+          })}>
             {/* Basic Information */}
             <div className="space-y-4">
               <h3 className="text-lg font-semibold text-cyan">
@@ -737,17 +738,40 @@ export const AddCarForm = () => {
                     value={imageUrl}
                     onChange={(e) => setImageUrl(e.target.value)}
                     className="bg-background/50 border-cyan/20 focus:border-cyan"
+                    onKeyPress={(e) => {
+                      if (e.key === "Enter") {
+                        e.preventDefault();
+                        if (imageUrl.trim()) {
+                          addImage(imageUrl);
+                          setImageUrl("");
+                        }
+                      }
+                    }}
                   />
                   <Button
                     type="button"
-                    onClick={() => addImage("cars/pexels-photo-3764984.webp")}
+                    onClick={() => {
+                      if (imageUrl.trim()) {
+                        addImage(imageUrl);
+                        setImageUrl("");
+                      }
+                    }}
                     className="bg-cyan hover:bg-cyan/80 text-black"
                   >
                     Add
                   </Button>
                 </div>
+                {errors.images && (
+                  <p className="text-sm text-red-500">
+                    {errors.images.message}
+                  </p>
+                )}
               </div>
 
+              <p className="text-sm text-muted-foreground">
+                Added {images.length} image(s). At least 1 image is required.
+              </p>
+              
               {images.length > 0 && (
                 <Carousel className="w-full">
                   <CarouselContent>

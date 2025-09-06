@@ -42,6 +42,7 @@ class AIService {
       ],
     });
 
+    console.log("AI Response:", text);
     return text;
   };
 
