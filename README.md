@@ -1,34 +1,64 @@
-# Velociti AI 🚗⚡
+# VeloCiti AI 🚗⚡
 
-An **AI-powered car marketplace** built with **Next.js, TypeScript, Tailwind CSS, Gemini AI, and ImageKit**.  
-Velociti AI simplifies car listing, enhances user discovery, and improves visual appeal with intelligent AI-driven features.  
+![VeloCiti AI](./assets/hero-banner.png)
 
----
+An **AI-powered car marketplace** that simplifies car listing and enhances discovery with intelligent features.
 
 ## ✨ Features
 
-- 🤖 **AI Autofill (Gemini AI)**: Reduces manual input by ~70% with intelligent form completion.  
-- 🔍 **AI Search & Recommendations**: Helps users discover top electric cars, improving engagement by ~30%.  
-- 🖼️ **AI-Generated Car Images (ImageKit)**: Generates realistic car images, enhancing listing accuracy and visual appeal.  
-- ⚡ **Fast & Responsive UI**: Built with **Next.js, TypeScript, and Tailwind** for scalability and clean design.  
-- ☁️ **Deployed on Vercel** with modern CI/CD workflows.  
-
----
+- 🤖 **AI Autofill**: Reduces manual input by ~70% using Gemini AI
+- 🔍 **Smart Search**: AI-powered recommendations improve engagement by ~30%
+- 🖼️ **AI Car Images**: Generate realistic car visuals with ImageKit
+- ⚡ **Modern UI**: Fast, responsive design with Next.js and Tailwind
 
 ## 🛠️ Tech Stack
 
-- **Frontend**: Next.js, TypeScript, Tailwind CSS  
-- **AI Integration**: Gemini AI  
-- **Image Handling**: ImageKit API  
-- **Deployment**: Vercel  
+- **Frontend**: Next.js, TypeScript, Tailwind CSS
+- **AI**: Gemini AI
+- **Images**: ImageKit API
+- **Deploy**: Vercel
 
----
+## 🚀 Quick Start
+
+```bash
+# Clone repository
+git clone https://github.com/swastikpratik-bit/VeloCiti-AI.git
+cd VeloCiti-AI
+
+# Install dependencies
+npm install
+
+# Set environment variables
+cp .env.example .env.local
+# Add your API keys for Gemini AI and ImageKit
+
+# Run development server
+npm run dev
+```
+
+## 📁 Project Structure
+
+```
+src/
+├── app/           # Next.js app router
+├── components/    # Reusable UI components
+├── lib/          # Utilities and API clients
+└── types/        # TypeScript definitions
+```
+
+## 🔧 Environment Variables
+
+```env
+GEMINI_API_KEY=your_gemini_api_key
+IMAGEKIT_PUBLIC_KEY=your_imagekit_public_key
+IMAGEKIT_PRIVATE_KEY=your_imagekit_private_key
+IMAGEKIT_URL_ENDPOINT=your_imagekit_url
+```
 
 ## 📸 Screenshots
 
-| AI Autofill | AI Search | AI Car Images |
-|-------------|-----------|---------------|
-| ![AI Autofill](./assets/autofill.png) | ![AI Search](./assets/ai-search.png) | ![AI Car Images](./assets/ai-images.png) |
+| Home Page | AI Autofill | Smart Search | Car Details |
+|-----------|-------------|--------------|-------------|
+| ![Home](./assets/home.png) | ![Autofill](./assets/autofill.png) | ![Search](./assets/ai-search.png) | ![Details](./assets/cardetails.png) |
 
----
 
