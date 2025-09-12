@@ -59,6 +59,7 @@ IMAGEKIT_URL_ENDPOINT=your_imagekit_url
 
 | Home Page | AI Autofill | Smart Search | Car Details |
 |-----------|-------------|--------------|-------------|
-| ![Home](./assets/home.png) | ![Autofill](./assets/autofill.png) | ![Search](./assets/ai-search.png) | ![Details](./assets/cardetails.png) |
+| ![Home](./assets/home.png) | ![Autofill](./assets/autofill.png) 
+| ![Search](./assets/ai-search.png) | ![Details](./assets/cardetails.png) 
 
 
