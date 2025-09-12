@@ -57,9 +57,10 @@ IMAGEKIT_URL_ENDPOINT=your_imagekit_url
 
 ## 📸 Screenshots
 
-| Home Page | AI Autofill | Smart Search | Car Details |
-|-----------|-------------|--------------|-------------|
-| ![Home](./assets/home.png) | ![Autofill](./assets/autofill.png) 
-| ![Search](./assets/ai-search.png) | ![Details](./assets/cardetails.png) 
+| Home Page | AI Autofill |
+|-----------|-------------|
+| ![Home](./assets/home.png) | ![Autofill](./assets/autofill.png) |
 
-
+| Smart Search | Car Details |
+|--------------|-------------|
+| ![Search](./assets/ai-search.png) | ![Details](./assets/cardetails.png) |
