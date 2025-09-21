@@ -28,6 +28,9 @@ export const metadata: Metadata = {
   keywords:
     "AI cars, car marketplace, artificial intelligence, auto selling, car buying",
   authors: [{ name: "VeloCiti Team" }],
+  icons : {
+    icon : '/logo.png', 
+  }
 };
 
 // Viewport (separate export)
