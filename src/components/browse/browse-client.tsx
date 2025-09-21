@@ -58,8 +58,8 @@ export function BrowseClient() {
         />
         
         <ResultsHeader
-          filteredCount={filteredCars.length}
-          totalCount={BROWSE_CARS_v2.length}
+          filteredCount={BROWSE_CARS.length - filteredCars.length}
+          totalCount={BROWSE_CARS.length}
           sortBy={sortBy}
           onSortChange={setSortBy}
         />
