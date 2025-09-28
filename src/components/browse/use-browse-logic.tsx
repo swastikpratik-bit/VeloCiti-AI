@@ -41,7 +41,7 @@ export function useBrowseLogic(carsData: Car[] = []) {
   }, []);
 
   const filteredCars = useMemo(() => {
-    let filtered = carsData;
+    let filtered = [...carsData];
 
     if (searchQuery) {
       const query = searchQuery.toLowerCase();
@@ -58,17 +58,18 @@ export function useBrowseLogic(carsData: Car[] = []) {
         filtered = filtered.filter((car) => {
           switch (filterType) {
             case "fuelType":
-              return values.includes(car.fuelType);
+              const carFuelType = car.fuelType === "GASOLINE" ? "PETROL" : car.fuelType;
+              return values.includes(carFuelType);
             case "transmission":
               return values.includes(car.transmission);
             case "priceRange":
               const price = car.price;
               return values.some(range => {
                 switch (range) {
-                  case "Under $50k": return price < 50000;
-                  case "$50k - $100k": return price >= 50000 && price <= 100000;
-                  case "$100k - $200k": return price >= 100000 && price <= 200000;
-                  case "Over $200k": return price > 200000;
+                  case "Under ₹40L": return price < 4000000;
+                  case "₹40L - ₹80L": return price >= 4000000 && price <= 8000000;
+                  case "₹80L - ₹1.6Cr": return price >= 8000000 && price <= 16000000;
+                  case "Over ₹1.6Cr": return price > 16000000;
                   default: return true;
                 }
               });
@@ -94,7 +95,7 @@ export function useBrowseLogic(carsData: Car[] = []) {
     });
 
     return filtered;
-  }, [searchQuery, selectedFilters, sortBy]);
+  }, [carsData, searchQuery, selectedFilters, sortBy]);
 
   const toggleFilter = useCallback((filterType: string, value: string) => {
     setSelectedFilters((prev) => ({

@@ -4,8 +4,8 @@ import { AnimatePresence, motion } from "framer-motion";
 import { FILTERS } from "@/src/constants/browse-cars";
 
 const DISPLAY_FILTERS = {
-  priceRange: ["Under $50k", "$50k - $100k", "$100k - $200k", "Over $200k"],
-  fuelType: ["Electric", "Hybrid", "Gasoline"],
+  priceRange: ["Under ₹40L", "₹40L - ₹80L", "₹80L - ₹1.6Cr", "Over ₹1.6Cr"],
+  fuelType: ["Electric", "Hybrid", "Petrol", "Diesel"],
   transmission: ["Auto", "Manual"],
 };
 
@@ -13,7 +13,8 @@ const FILTER_MAPPING = {
   fuelType: {
     "Electric": "ELECTRIC",
     "Hybrid": "HYBRID",
-    "Gasoline": "GASOLINE"
+    "Petrol": "PETROL",
+    "Diesel": "DIESEL"
   },
   transmission: {
     "Auto": "AUTO",

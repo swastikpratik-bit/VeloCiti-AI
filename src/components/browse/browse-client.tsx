@@ -40,7 +40,7 @@ export function BrowseClient() {
     filteredCars,
     toggleFilter,
     toggleLike,
-  } = useBrowseLogic();
+  } = useBrowseLogic(BROWSE_CARS);
 
   return (
     <>
@@ -58,7 +58,7 @@ export function BrowseClient() {
         />
         
         <ResultsHeader
-          filteredCount={BROWSE_CARS.length - filteredCars.length}
+          filteredCount={filteredCars.length}
           totalCount={BROWSE_CARS.length}
           sortBy={sortBy}
           onSortChange={setSortBy}
@@ -68,7 +68,7 @@ export function BrowseClient() {
       <section className="pb-20">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <CarsGrid
-            cars={BROWSE_CARS}
+            cars={filteredCars}
             viewMode={viewMode}
             isMobile={isMobile}
             likedCars={likedCars}
