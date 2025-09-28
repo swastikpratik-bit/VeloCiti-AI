@@ -61,23 +61,23 @@ export default function AISearchPage() {
 
   const handleSearch = async () => {
     if (!searchQuery.trim()) return
-    
+
     setIsSearching(true)
     setShowResults(false)
-    
+
     try {
       const aiResponse = await findCar(searchQuery)
       const carIds = convertStringToArray(aiResponse)
-      
+
       const carDetails = await Promise.all(carIds.map(async (carId) => {
         const car = await getCarById(carId)
         return car
       }))
 
       setCars(carDetails.filter(Boolean))
-      
+
       await new Promise(resolve => setTimeout(resolve, 1000))
-      
+
       setIsSearching(false)
       setShowResults(true)
     } catch (error) {
@@ -90,8 +90,8 @@ export default function AISearchPage() {
 
   return (
     <main className="min-h-screen">
-      
-      
+
+
       {/* Hero Section */}
       <section className="pt-24 pb-12 relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-br from-blue-900/20 via-purple-900/20 to-cyan-900/20" />
@@ -119,21 +119,21 @@ export default function AISearchPage() {
           >
             <div className="glass rounded-2xl p-8 glow-cyan">
               <div className="relative mb-6">
-                <div className="flex items-center gap-4 p-4 rounded-xl bg-background/50 border border-cyan/20">
-                  <Search className="h-6 w-6 text-cyan flex-shrink-0" />
+                <div className="flex items-center gap-2 sm:gap-4 p-3 sm:p-4 rounded-xl bg-background/50 border border-cyan/20">
+                  <Search className="h-5 w-5 sm:h-6 sm:w-6 text-cyan flex-shrink-0" />
                   <input
                     type="text"
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                     placeholder={`Try: "${searchSuggestions[currentSuggestion]}"`}
-                    className="flex-1 bg-transparent text-lg outline-none placeholder:text-muted-foreground"
+                    className="flex-1 min-w-0 bg-transparent text-base sm:text-lg outline-none placeholder:text-muted-foreground"
                     onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
                   />
-                  <Button 
-                    size="sm" 
+                  <Button
+                    size="sm"
                     onClick={handleSearch}
                     disabled={!searchQuery.trim() || isSearching}
-                    className="bg-cyan hover:bg-cyan/80 text-black"
+                    className="flex-shrink-0 bg-cyan hover:bg-cyan/80 text-black px-3 sm:px-4"
                   >
                     {isSearching ? (
                       <div className="w-4 h-4 border-2 border-black/20 border-t-black rounded-full animate-spin" />
@@ -142,8 +142,6 @@ export default function AISearchPage() {
                     )}
                   </Button>
                 </div>
-
-
               </div>
 
               {/* Quick Search Suggestions */}
@@ -282,7 +280,7 @@ export default function AISearchPage() {
                         </div>
                         <div className="text-right">
                           <p className="text-2xl font-bold text-cyan">
-                            ${car?.price?.toLocaleString()}
+                            ₹{car?.price?.toLocaleString()}
                           </p>
                         </div>
                       </div>
@@ -326,7 +324,7 @@ export default function AISearchPage() {
 
                       <div className="flex gap-2">
                         <Button className="flex-1 bg-cyan hover:bg-cyan/80 text-black"
-                          onClick={() => window.location.href = `/cars/${car?.id}`}
+                          onClick={() => window.location.href = `/browse/${car?.id}`}
                         >
                           View Details
                         </Button>
@@ -359,7 +357,7 @@ export default function AISearchPage() {
               <p className="text-muted-foreground mb-8">
                 Try adjusting your search query or browse our available cars
               </p>
-              <Button 
+              <Button
                 onClick={() => setShowResults(false)}
                 className="bg-cyan hover:bg-cyan/80 text-black"
               >

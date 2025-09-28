@@ -110,7 +110,7 @@ export const CarCard = memo(function CarCard({
               <h3 className="text-xl font-outfit font-semibold mb-2 group-hover:text-cyan transition-colors">
                 {car.name}
               </h3>
-              <p className="text-2xl font-bold text-cyan mb-4">${car.price.toLocaleString()}</p>
+              <p className="text-2xl font-bold text-cyan mb-4">₹{car.price.toLocaleString()}</p>
 
               <div
                 className={`gap-3 text-sm text-muted-foreground mb-4 ${

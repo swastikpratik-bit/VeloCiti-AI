@@ -38,12 +38,13 @@ export function CarHeader({
       animate={{ opacity: 1, y: 0 }}
       className="glass rounded-2xl p-8"
     >
-      <div className="flex justify-between items-start mb-6">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4 sm:gap-0">
+        {/* Left side: Name + details */}
         <div>
-          <h1 className="text-3xl sm:text-4xl font-outfit font-bold mb-2">
+          <h1 className="text-2xl sm:text-3xl md:text-4xl font-outfit font-bold mb-2">
             {name}
           </h1>
-          <div className="flex items-center gap-4 text-muted-foreground mb-4">
+          <div className="flex flex-wrap items-center gap-3 sm:gap-4 text-muted-foreground mb-3 sm:mb-4">
             <div className="flex items-center gap-1">
               <MapPin className="h-4 w-4" />
               <span>{location}</span>
@@ -60,15 +61,16 @@ export function CarHeader({
             </div>
           </div>
         </div>
-        <div className="text-right">
-          <p className="text-3xl sm:text-4xl font-bold text-cyan mb-1">
-            ${price.toLocaleString()}
+
+        {/* Right side: Price */}
+        <div className="text-left sm:text-right">
+          <p className="text-2xl sm:text-3xl md:text-4xl font-bold text-cyan mb-1">
+            ₹{price.toLocaleString()}
           </p>
-          <p className="text-sm text-muted-foreground">
-            Market price
-          </p>
+          <p className="text-sm text-muted-foreground">Market price</p>
         </div>
       </div>
+
 
       {/* Quick Stats */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
