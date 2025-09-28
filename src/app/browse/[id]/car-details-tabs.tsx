@@ -185,27 +185,22 @@ export function CarDetailsTabs({ description, specifications, colors }: CarDetai
               </div>
 
               <div className="mt-8">
-                <h4 className="font-semibold mb-4 text-cyan">
-                  Available Colors
-                </h4>
-                <div className="flex gap-3">
+                <h4 className="font-semibold mb-4 text-cyan">Available Colors</h4>
+                <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-thin scrollbar-thumb-cyan/50 scrollbar-track-white/5">
                   {colors.map((color) => (
-                    <div key={color} className="text-center">
+                    <div key={color} className="flex-shrink-0 text-center">
                       <div
                         className="w-12 h-12 rounded-full border-2 border-white/20 mb-2"
                         style={{
-                          backgroundColor: color
-                            .toLowerCase()
-                            .replace(" ", ""),
+                          backgroundColor: color.toLowerCase().replace(" ", ""),
                         }}
                       />
-                      <p className="text-xs text-muted-foreground">
-                        {color}
-                      </p>
+                      <p className="text-xs text-muted-foreground">{color}</p>
                     </div>
                   ))}
                 </div>
               </div>
+
             </CardContent>
           </Card>
         </TabsContent>
